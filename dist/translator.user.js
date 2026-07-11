@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         网页翻译助手 MVP
 // @namespace    https://github.com/local/translator-userscript
-// @version      0.1.0
+// @version      0.1.1
 // @description  高性能、模块化的网页与划词翻译工具
 // @author       MiaViaU
 // @license      MIT
@@ -24,6 +24,8 @@
   var messages = {
     "zh-CN": {
       translatePage: "\u7FFB\u8BD1\u6574\u9875",
+      menuTranslatePage: "\u5168\u9875\u7FFB\u8BD1",
+      menuTranslateSelection: "\u7FFB\u8BD1\u9009\u4E2D",
       translateVisible: "\u7FFB\u8BD1\u53EF\u89C6\u533A",
       restore: "\u6062\u590D\u539F\u6587",
       settings: "\u8BBE\u7F6E",
@@ -31,6 +33,7 @@
       translated: "\u5DF2\u7FFB\u8BD1 {count} \u6BB5\u6587\u672C",
       restored: "\u5DF2\u6062\u590D {count} \u6BB5\u539F\u6587",
       noText: "\u6CA1\u6709\u627E\u5230\u53EF\u7FFB\u8BD1\u7684\u6587\u672C",
+      noSelection: "\u8BF7\u5148\u9009\u4E2D\u6587\u672C",
       error: "\u7FFB\u8BD1\u5931\u8D25\uFF1A{message}",
       selectionTranslate: "\u7FFB\u8BD1\u9009\u4E2D\u6587\u672C",
       inputTranslate: "\u8F93\u5165\u7FFB\u8BD1",
@@ -67,6 +70,8 @@
     },
     "en-US": {
       translatePage: "Translate page",
+      menuTranslatePage: "Translate full page",
+      menuTranslateSelection: "Translate selection",
       translateVisible: "Translate visible area",
       restore: "Restore original",
       settings: "Settings",
@@ -74,6 +79,7 @@
       translated: "Translated {count} text nodes",
       restored: "Restored {count} original nodes",
       noText: "No translatable text found",
+      noSelection: "Select text to translate first",
       error: "Translation failed: {message}",
       selectionTranslate: "Translate selection",
       inputTranslate: "Text translation",
@@ -1043,6 +1049,7 @@
       const previous = this.currentPosition && !this.isEdgeHidden ? { ...this.currentPosition, width: this.bar.offsetWidth } : null;
       this.mode = normalizeMode(mode);
       this.renderMode();
+      if (persist) this.persist();
       requestAnimationFrame(() => {
         if (previous) {
           const isLeftAnchored = previous.left + previous.width / 2 < viewportWidth() / 2;
@@ -1052,7 +1059,6 @@
           };
         }
         this.place();
-        if (persist) this.persist();
       });
     }
     renderMode() {
@@ -1585,6 +1591,9 @@
   };
 
   // src/selection/selection.js
+  function getSelectedText() {
+    return window.getSelection()?.toString().trim() || "";
+  }
   var SelectionTranslator = class {
     constructor(root, { getSettings, onOpen, onNewSelection = () => {
     }, t }) {
@@ -1608,7 +1617,7 @@
     refresh() {
       if (!this.getSettings().showSelectionButton) return this.hide();
       const selection = window.getSelection();
-      const value = selection?.toString().trim();
+      const value = getSelectedText();
       if (!value || value.length > 5e3 || !selection.rangeCount) return this.hide();
       const range = selection.getRangeAt(0);
       const common = range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE ? range.commonAncestorContainer : range.commonAncestorContainer.parentElement;
@@ -1725,12 +1734,20 @@
     };
     const showSettings = () => openSettings(dialog, t, settings, saveSettings);
     const openInput = () => popup.open();
-    let toolbarSaveQueue = Promise.resolve();
+    const runSelection = () => {
+      const text = getSelectedText();
+      if (!text) {
+        toast.show(t("noSelection"));
+        return;
+      }
+      popup.open({ text, autoTranslate: true });
+    };
     const saveToolbarState = (patch) => {
-      toolbarSaveQueue = toolbarSaveQueue.then(async () => {
-        settings = await settingsStore.save({ ...settings, ...patch });
+      const next = { ...settings, ...patch };
+      return settingsStore.save(next).then((saved) => {
+        settings = saved;
+        return saved;
       });
-      return toolbarSaveQueue;
     };
     toolbar = new Toolbar(root, t, {
       translatePage: runPage,
@@ -1752,7 +1769,8 @@
       onNewSelection: () => popup.close(),
       t
     });
-    api.registerMenuCommand(t("translatePage"), runPage);
+    api.registerMenuCommand(t("menuTranslatePage"), runPage);
+    api.registerMenuCommand(t("menuTranslateSelection"), runSelection);
     api.registerMenuCommand(t("translateVisible"), runVisible);
     api.registerMenuCommand(t("inputTranslate"), openInput);
     api.registerMenuCommand(t("restore"), restore);

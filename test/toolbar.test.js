@@ -29,6 +29,25 @@ describe('Toolbar', () => {
     root.remove();
   });
 
+  it('切换收起状态时立即持久化，无需等待下一帧布局', () => {
+    const root = document.createElement('div');
+    document.body.append(root);
+    const onStateChange = vi.fn();
+    const original = globalThis.requestAnimationFrame;
+    globalThis.requestAnimationFrame = vi.fn(() => 1);
+    const toolbar = new Toolbar(root, t, actions, { onStateChange });
+
+    toolbar.collapseButton.click();
+
+    expect(onStateChange).toHaveBeenCalledWith(expect.objectContaining({
+      toolbarMode: TOOLBAR_MODE.COLLAPSED,
+      toolbarCollapsed: true,
+    }));
+    globalThis.requestAnimationFrame = original;
+    toolbar.destroy();
+    root.remove();
+  });
+
   it('切换展开收起时按最近边缘锚定：左侧向右展开，右侧向左展开', () => {
     const root = document.createElement('div');
     document.body.append(root);

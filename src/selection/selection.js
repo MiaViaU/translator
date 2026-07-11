@@ -1,5 +1,9 @@
 import { button } from '../ui/dom.js';
 
+export function getSelectedText() {
+  return window.getSelection()?.toString().trim() || '';
+}
+
 export class SelectionTranslator {
   constructor(root, { getSettings, onOpen, onNewSelection = () => {}, t }) {
     this.getSettings = getSettings;
@@ -23,7 +27,7 @@ export class SelectionTranslator {
   refresh() {
     if (!this.getSettings().showSelectionButton) return this.hide();
     const selection = window.getSelection();
-    const value = selection?.toString().trim();
+    const value = getSelectedText();
     if (!value || value.length > 5000 || !selection.rangeCount) return this.hide();
     const range = selection.getRangeAt(0);
     const common = range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE ? range.commonAncestorContainer : range.commonAncestorContainer.parentElement;

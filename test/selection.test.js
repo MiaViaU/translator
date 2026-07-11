@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SelectionTranslator } from '../src/selection/selection.js';
+import { getSelectedText, SelectionTranslator } from '../src/selection/selection.js';
 
 const t = (key) => key;
 
@@ -14,6 +14,17 @@ function selectText(textNode, rect) {
 }
 
 describe('SelectionTranslator', () => {
+  it('返回去除首尾空白后的当前选中文本', () => {
+    const textNode = document.createTextNode('  translate me  ');
+    document.body.append(textNode);
+    selectText(textNode, { left: 0, top: 0, right: 1, bottom: 1, width: 1, height: 1 });
+
+    expect(getSelectedText()).toBe('translate me');
+
+    window.getSelection().removeAllRanges();
+    textNode.remove();
+  });
+
   it('在选区末行附近显示圆点，并将选中文本交给统一输入翻译弹窗', () => {
     document.body.textContent = '';
     const textNode = document.createTextNode('translate me');

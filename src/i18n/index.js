@@ -1,6 +1,8 @@
 const messages = {
   'zh-CN': {
     translatePage: '翻译整页',
+    menuTranslatePage: '全页翻译',
+    menuTranslateSelection: '翻译选中',
     translateVisible: '翻译可视区',
     restore: '恢复原文',
     settings: '设置',
@@ -8,6 +10,7 @@ const messages = {
     translated: '已翻译 {count} 段文本',
     restored: '已恢复 {count} 段原文',
     noText: '没有找到可翻译的文本',
+    noSelection: '请先选中文本',
     error: '翻译失败：{message}',
     selectionTranslate: '翻译选中文本',
     inputTranslate: '输入翻译',
@@ -44,6 +47,8 @@ const messages = {
   },
   'en-US': {
     translatePage: 'Translate page',
+    menuTranslatePage: 'Translate full page',
+    menuTranslateSelection: 'Translate selection',
     translateVisible: 'Translate visible area',
     restore: 'Restore original',
     settings: 'Settings',
@@ -51,6 +56,7 @@ const messages = {
     translated: 'Translated {count} text nodes',
     restored: 'Restored {count} original nodes',
     noText: 'No translatable text found',
+    noSelection: 'Select text to translate first',
     error: 'Translation failed: {message}',
     selectionTranslate: 'Translate selection',
     inputTranslate: 'Text translation',

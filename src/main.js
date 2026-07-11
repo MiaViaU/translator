@@ -11,7 +11,7 @@ import { Toolbar } from './ui/toolbar.js';
 import { Toast } from './ui/toast.js';
 import { Dialog, openSettings } from './ui/dialog.js';
 import { TranslationInputPopup } from './selection/popup.js';
-import { SelectionTranslator } from './selection/selection.js';
+import { getSelectedText, SelectionTranslator } from './selection/selection.js';
 
 async function bootstrap() {
   // MVP 不处理 iframe 内容；此保护可避免子框架中重复初始化整套 UI。
@@ -64,12 +64,20 @@ async function bootstrap() {
   };
   const showSettings = () => openSettings(dialog, t, settings, saveSettings);
   const openInput = () => popup.open();
-  let toolbarSaveQueue = Promise.resolve();
+  const runSelection = () => {
+    const text = getSelectedText();
+    if (!text) {
+      toast.show(t('noSelection'));
+      return;
+    }
+    popup.open({ text, autoTranslate: true });
+  };
   const saveToolbarState = (patch) => {
-    toolbarSaveQueue = toolbarSaveQueue.then(async () => {
-      settings = await settingsStore.save({ ...settings, ...patch });
+    const next = { ...settings, ...patch };
+    return settingsStore.save(next).then((saved) => {
+      settings = saved;
+      return saved;
     });
-    return toolbarSaveQueue;
   };
 
   toolbar = new Toolbar(root, t, {
@@ -93,7 +101,8 @@ async function bootstrap() {
     t,
   });
 
-  api.registerMenuCommand(t('translatePage'), runPage);
+  api.registerMenuCommand(t('menuTranslatePage'), runPage);
+  api.registerMenuCommand(t('menuTranslateSelection'), runSelection);
   api.registerMenuCommand(t('translateVisible'), runVisible);
   api.registerMenuCommand(t('inputTranslate'), openInput);
   api.registerMenuCommand(t('restore'), restore);

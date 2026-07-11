@@ -3,7 +3,7 @@ import { build, context } from 'esbuild';
 const metadata = `// ==UserScript==
 // @name         网页翻译助手 MVP
 // @namespace    https://github.com/local/translator-userscript
-// @version      0.1.0
+// @version      0.1.1
 // @description  高性能、模块化的网页与划词翻译工具
 // @author       MiaViaU
 // @license      MIT

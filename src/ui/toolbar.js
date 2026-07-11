@@ -117,6 +117,7 @@ export class Toolbar {
       : null;
     this.mode = normalizeMode(mode);
     this.renderMode();
+    if (persist) this.persist();
     requestAnimationFrame(() => {
       if (previous) {
         const isLeftAnchored = previous.left + previous.width / 2 < viewportWidth() / 2;
@@ -126,7 +127,6 @@ export class Toolbar {
         };
       }
       this.place();
-      if (persist) this.persist();
     });
   }
 
