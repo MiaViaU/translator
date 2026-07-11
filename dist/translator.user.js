@@ -3,6 +3,7 @@
 // @namespace    https://github.com/local/translator-userscript
 // @version      0.1.0
 // @description  高性能、模块化的网页与划词翻译工具
+// @license      MIT
 // @match        *://*/*
 // @grant        GM.xmlHttpRequest
 // @grant        GM.getValue
