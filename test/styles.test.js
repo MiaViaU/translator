@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest';
+import { uiStyles } from '../src/styles/ui.js';
+
+describe('设置界面样式', () => {
+  it('强制隐藏未展开的菜单，并为滚动区域提供定制滚动条', () => {
+    expect(uiStyles).toContain('.tr-combobox-menu[hidden] { display: none; }');
+    expect(uiStyles).toContain('.tr-dialog-content::-webkit-scrollbar');
+    expect(uiStyles).toContain('scrollbar-width: thin');
+    expect(uiStyles).toContain('.tr-dialog--scrollable');
+    expect(uiStyles).toContain('.tr-input:focus, .tr-input:focus-visible');
+    expect(uiStyles).not.toContain('.tr-button:focus-visible, .tr-input:focus-visible');
+    expect(uiStyles).toContain('.tr-selection-button::after');
+    expect(uiStyles).toContain('.tr-translation-dialog');
+    expect(uiStyles).toContain('scrollbar-gutter: stable');
+    expect(uiStyles).toContain('.tr-translation-languages');
+    expect(uiStyles).toContain('.tr-translation-copy svg');
+    expect(uiStyles).toContain('.tr-toolbar.is-collapsed');
+    expect(uiStyles).toContain('.tr-toolbar-drag');
+    expect(uiStyles).toContain('.tr-toolbar-collapse svg');
+    expect(uiStyles).toContain('.tr-toolbar-drag svg');
+    expect(uiStyles).toContain('.tr-toolbar.is-collapsed { gap: 4px; padding: 7px; border-color: rgba(255,255,255,.8);');
+    expect(uiStyles).toContain('.tr-toolbar.is-collapsed .tr-toolbar-actions { display: none; }');
+    expect(uiStyles).toContain('.tr-toolbar.is-edge-hidden');
+    expect(uiStyles).toContain('.tr-toolbar.is-edge-hidden .tr-toolbar-actions { display: none; }');
+    expect(uiStyles).toContain('justify-content: flex-end');
+    expect(uiStyles).toContain('background: rgba(244,248,255,.92)');
+    expect(uiStyles).toContain('.tr-toolbar.is-edge-hidden .tr-toolbar-collapse { width: 30px; min-width: 30px; height: 34px;');
+    expect(uiStyles).toContain('.tr-toolbar.is-edge-hidden .tr-toolbar-collapse svg { transform: rotate(0deg); }');
+    expect(uiStyles).toContain('.tr-toolbar.is-edge-hidden.is-hidden-left .tr-toolbar-collapse svg { transform: rotate(180deg); }');
+    expect(uiStyles).not.toContain('.tr-toolbar.is-collapsed .tr-toolbar-actions, .tr-toolbar.is-collapsed .tr-toolbar-drag');
+    expect(uiStyles).toContain('.tr-toast-icon svg');
+    expect(uiStyles).toContain('.tr-toast-stack { position: fixed; right: 22px; bottom: 68px;');
+    expect(uiStyles).toContain('.tr-toast { display: flex; align-items: center; gap: 3px;');
+    expect(uiStyles).toContain('font-size: 12px');
+    expect(uiStyles).toContain('.tr-button.tr-pointer-focused:focus-visible { outline: none; }');
+    expect(uiStyles).not.toContain('.tr-status {');
+    expect(uiStyles).toContain('max-width: calc(100vw - 24px)');
+    expect(uiStyles).toContain('@media (max-width: 360px)');
+  });
+});

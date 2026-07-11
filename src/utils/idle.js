@@ -1,0 +1,24 @@
+export function whenIdle() {
+  return new Promise((resolve) => {
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(resolve, { timeout: 500 });
+    } else {
+      setTimeout(() => resolve({ timeRemaining: () => 0, didTimeout: true }), 16);
+    }
+  });
+}
+
+export async function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  textarea.remove();
+}
