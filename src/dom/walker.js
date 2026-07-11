@@ -14,7 +14,7 @@ const SKIPPED_SELECTOR = [
   'span.katex', '[class^="MathJax"]', '[role="math"]', 'math-renderer', '.ltx_Math',
 ].join(',');
 const NON_TRANSLATABLE_TEXT = /^(?:https?:\/\/\S+|www\.\S+|mailto:\S+|tel:\S+|[\w.+-]+@[\w.-]+\.[a-z]{2,}|(?:[\w-]*[_$][\w$-]*|[\w.-]+[\\/][\w./\\-]+|[\w-]+(?:\.[\w-]+){1,})(?:\([^)]*\))?[;,{})\]]?)$/i;
-const NON_TEXTUAL_CONTENT = /^(?:[\d\s.,:/+%#()\[\]{}|*_~^=-]+|copyright\b)/i;
+const NON_TEXTUAL_CONTENT = /^(?:[\d\s\p{P}\p{S}]+|copyright\b.*)$/iu;
 
 function isInsideSkippedElement(element) {
   if (!element) return true;

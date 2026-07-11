@@ -41,4 +41,23 @@ describe('文本节点遍历', () => {
     const texts = collectTextNodes(document.body).map((node) => node.nodeValue.trim());
     expect(texts).toEqual(['Readable content']);
   });
+
+  it('翻译链接后以标点开头的自然语言文本，但仍跳过纯标点数字内容', () => {
+    document.body.textContent = '';
+    const paragraph = document.createElement('p');
+    paragraph.append(
+      document.createTextNode('彼得·布拉德肖'),
+      Object.assign(document.createElement('a'), { textContent: '在《卫报》中持不同意见' }),
+      document.createTextNode(', calling the film a "competent but pointless remake" in his review.'),
+    );
+    const punctuation = document.createElement('span');
+    punctuation.textContent = ' — 2026 / 07 / 11 — ';
+    document.body.append(paragraph, punctuation);
+
+    expect(collectTextNodes(document.body).map((node) => node.nodeValue.trim())).toEqual([
+      '彼得·布拉德肖',
+      '在《卫报》中持不同意见',
+      ', calling the film a "competent but pointless remake" in his review.',
+    ]);
+  });
 });

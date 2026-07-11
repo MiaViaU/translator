@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         网页翻译助手 MVP
 // @namespace    https://github.com/local/translator-userscript
-// @version      0.1.2
+// @version      0.1.3
 // @description  高性能、模块化的网页与划词翻译工具
 // @author       MiaViaU
 // @license      MIT
@@ -530,7 +530,7 @@
     ".ltx_Math"
   ].join(",");
   var NON_TRANSLATABLE_TEXT = /^(?:https?:\/\/\S+|www\.\S+|mailto:\S+|tel:\S+|[\w.+-]+@[\w.-]+\.[a-z]{2,}|(?:[\w-]*[_$][\w$-]*|[\w.-]+[\\/][\w./\\-]+|[\w-]+(?:\.[\w-]+){1,})(?:\([^)]*\))?[;,{})\]]?)$/i;
-  var NON_TEXTUAL_CONTENT = /^(?:[\d\s.,:/+%#()\[\]{}|*_~^=-]+|copyright\b)/i;
+  var NON_TEXTUAL_CONTENT = /^(?:[\d\s\p{P}\p{S}]+|copyright\b.*)$/iu;
   function isInsideSkippedElement(element2) {
     if (!element2) return true;
     if (element2.closest('[data-translator-ui], [hidden], [contenteditable="true"]')) return true;
